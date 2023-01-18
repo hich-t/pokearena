@@ -8,31 +8,56 @@ const Battle = ({ onGameEnd }) => {
 
   console.log(team, "team from Battle");
 
-  // players configuration
-  const playerStats = {
-    // from team array
-    level: 44,
-    maxHealth: 177,
-    name: "Mega Man",
-    // img: '/assets/megaman.png',
+  //// players configuration
 
-    magic: 32,
-    attack: 50,
-    defense: 30,
-    magicDefense: 30,
+  state = {
+    playerName: "Blastoise",
+    playerLevel: 45,
+    playerHP: 200,
+    playerMaxHP: 200,
+    playerAttacks: {
+      attackOne: { name: "Bite", damage: 10 },
+      attackTwo: { name: "Surf", damage: 30 },
+      attackThree: { name: "Water Gun", damage: 35 },
+      attackFour: { name: "Hydro Pump", damage: 45 }
+    },
+    playerFaint: "",
+    enemyName: "Gengar",
+    enemyLevel: 43,
+    enemyHP: 200,
+    enemyMaxHP: 200,
+    enemyAttackNames: ["Hex", "Shadow Ball", "Dream Eater", "Nightmare"],
+    enemyAttackDamage: [10, 30, 35, 45],
+    enemyFaint: "",
+    textMessageOne: " ",
+    textMessageTwo: "",
+    gameOver: false
   };
 
-  const opponentStats = {
-    level: 44,
-    name: "Samus",
-    maxHealth: 188,
-    // img: '/assets/samus.png',
+  // const playerStats = {
+  //   // from team array
+  //   level: 44,
+  //   maxHealth: 177,
+  //   name: "Mega Man",
+  //   // img: '/assets/megaman.png',
 
-    magic: 50,
-    attack: 32,
-    defense: 20,
-    magicDefense: 48,
-  };
+  //   magic: 32,
+  //   attack: 50,
+  //   defense: 30,
+  //   magicDefense: 30,
+  // };
+
+  // const opponentStats = {
+  //   level: 44,
+  //   name: "Samus",
+  //   maxHealth: 188,
+  //   // img: '/assets/samus.png',
+
+  //   magic: 50,
+  //   attack: 32,
+  //   defense: 20,
+  //   magicDefense: 48,
+  // };
 
   // Game configuration
   const [sequence, setSequence] = useState({});
