@@ -1,19 +1,19 @@
-import { useState, useEffect, useContext } from "react"
-import { PokeContext } from "../Context/PokeContext"
+import { useState, useEffect, useContext } from "react";
+import { PokeContext } from "../Context/PokeContext";
 
 const Battle = ({ onGameEnd }) => {
+  const { value4 } = useContext(PokeContext);
+  const [team, setTeam] = value4;
+  const [team2, setTeam2] = value6;
 
-  const {value4} = useContext(PokeContext)
-  const [team, setTeam] = value4
-  const [team2, setTeam2] = value6
-
-  console.log(team, "team from Battle")
+  console.log(team, "team from Battle");
 
   // players configuration
-  const playerStats = {  // from team array
+  const playerStats = {
+    // from team array
     level: 44,
     maxHealth: 177,
-    name: 'Mega Man',
+    name: "Mega Man",
     // img: '/assets/megaman.png',
 
     magic: 32,
@@ -24,7 +24,7 @@ const Battle = ({ onGameEnd }) => {
 
   const opponentStats = {
     level: 44,
-    name: 'Samus',
+    name: "Samus",
     maxHealth: 188,
     // img: '/assets/samus.png',
 
@@ -34,51 +34,39 @@ const Battle = ({ onGameEnd }) => {
     magicDefense: 48,
   };
 
-
-
-
-
-
-
-
-
-
-
-
   // Game configuration
   const [sequence, setSequence] = useState({});
   const [turn, setTurn] = useState(0);
   const [inSequence, setInSequence] = useState(false);
 
   const [playerHealth, setPlayerHealth] = useState(playerStats.maxHealth);
-  const [opponentHealth, setOpponentHealth] = useState(
-    opponentStats.maxHealth,
-  );
+  const [opponentHealth, setOpponentHealth] = useState(opponentStats.maxHealth);
 
-  const wait = millisecondes =>
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, millisecondes);
-  });
+  const wait = (millisecondes) =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, millisecondes);
+    });
 
-  const useAIOpponent = turn => {
-    const [aiChoice, setAIChoice] = useState('');
-  
+  const useAIOpponent = (turn) => {
+    const [aiChoice, setAIChoice] = useState("");
+
     useEffect(() => {
       if (turn === 1) {
-        const options = ['attack', 'magic', 'heal'];
+        const options = ["attack", "magic", "heal"];
         setAIChoice(options[Math.floor(Math.random() * options.length)]);
       }
     }, [turn]);
-  
+
     return aiChoice;
   };
 
   const aiChoice = useAIOpponent(turn);
 
   const attack = ({ attacker, receiver }) => {
-    const receivedDamage = attacker.attack - (attacker.level - receiver.level) * 1.25;
+    const receivedDamage =
+      attacker.attack - (attacker.level - receiver.level) * 1.25;
     const finalDamage = receivedDamage - receiver.defense / 2;
     return finalDamage;
   };
@@ -91,7 +79,7 @@ const Battle = ({ onGameEnd }) => {
       const receiver = turn === 0 ? opponentStats : playerStats;
 
       switch (mode) {
-        case 'attack': {
+        case "attack": {
           const damage = attack({ attacker, receiver });
 
           (async () => {
@@ -120,8 +108,8 @@ const Battle = ({ onGameEnd }) => {
             // setAnnouncerMessage(`${receiver.name} felt that!`);
 
             turn === 0
-              ? setOpponentHealth(h => (h - damage > 0 ? h - damage : 0))
-              : setPlayerHealth(h => (h - damage > 0 ? h - damage : 0)); // We don't want a negative HP.
+              ? setOpponentHealth((h) => (h - damage > 0 ? h - damage : 0))
+              : setPlayerHealth((h) => (h - damage > 0 ? h - damage : 0)); // We don't want a negative HP.
             await wait(2000);
 
             // setAnnouncerMessage(`Now it's ${receiver.name} turn!`);
@@ -151,14 +139,12 @@ const Battle = ({ onGameEnd }) => {
       (async () => {
         await wait(1000);
         onGameEnd(playerHealth === 0 ? opponentStats : playerStats);
-        nextMatch( team.length > 0)
+        nextMatch(team.length > 0);
       })();
     }
   }, [playerHealth, opponentHealth, onGameEnd]);
 
-  return(
-    <h1>Battle!</h1>
-  )
-}
+  return <h1>Battle!</h1>;
+};
 
-export default Battle
+export default Battle;
