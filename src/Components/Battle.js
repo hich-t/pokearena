@@ -1,63 +1,103 @@
 import { useState, useEffect, useContext } from "react";
 import { PokeContext } from "../Context/PokeContext";
+import styles from '../css/styles.module.css';
+
+
+const Bar = ({ value, maxValue, label }) => {
+  <div className={styles.main}>
+    <div className={styles.label}>{label}</div>
+    <div className={styles.max}>
+      <div
+        className={styles.value}
+        style={{ width: `${(value / maxValue) * 100}%` }}
+      ></div>
+    </div>
+  </div>
+};
+
+const PlayerSummary = ({
+  main,
+  name,
+  level,
+  health,
+  maxHealth,
+  }) => {
+
+  const red = '#821400';
+  const blue = '#1953cb';
+
+  return(
+    <div
+      className={styles.main}
+      style={{ backgroundColor: main ? red : blue }}
+    >
+      <div className={styles.info}>
+        <div className={styles.name}>{name}</div>
+        <div className={styles.level}>Lvl {level}</div>
+      </div>
+
+      <div className={styles.health}>
+        <Bar label="HP" value={health} maxValue={maxHealth} />
+      </div>
+    </div>
+  )
+}
+
+const BattleAnnouncer = ({ message }) => {
+  // const typedMessage = useTypedMessage(message);
+
+  return (
+    <div className={styles.main}>
+      <div className={styles.message}>{message}</div>
+    </div>
+  );
+};
+
+const BattleMenu = ({ onAttack, onMagic, onHeal }) => {
+  <div className={styles.main}>
+    <div onClick={onAttack} className={styles.option}>
+      Attack
+    </div>
+    <div onClick={onMagic} className={styles.option}>
+      Magic
+    </div>
+    <div onClick={onHeal} className={styles.option}>
+      Heal
+    </div>
+  </div>
+};
+
 
 const Battle = ({ onGameEnd }) => {
   const { value4 } = useContext(PokeContext);
   const [team, setTeam] = value4;
-  const [team2, setTeam2] = value6;
 
   console.log(team, "team from Battle");
 
-  //// players configuration
+  const playerStats = {
+    // from team array
+    level: 44,
+    maxHealth: 177,
+    name: "Mega Man",
+    img: 'assets/megaman.png',
 
-  state = {
-    playerName: "Blastoise",
-    playerLevel: 45,
-    playerHP: 200,
-    playerMaxHP: 200,
-    playerAttacks: {
-      attackOne: { name: "Bite", damage: 10 },
-      attackTwo: { name: "Surf", damage: 30 },
-      attackThree: { name: "Water Gun", damage: 35 },
-      attackFour: { name: "Hydro Pump", damage: 45 }
-    },
-    playerFaint: "",
-    enemyName: "Gengar",
-    enemyLevel: 43,
-    enemyHP: 200,
-    enemyMaxHP: 200,
-    enemyAttackNames: ["Hex", "Shadow Ball", "Dream Eater", "Nightmare"],
-    enemyAttackDamage: [10, 30, 35, 45],
-    enemyFaint: "",
-    textMessageOne: " ",
-    textMessageTwo: "",
-    gameOver: false
+    magic: 32,
+    attack: 50,
+    defense: 30,
+    magicDefense: 30,
   };
 
-  // const playerStats = {
-  //   // from team array
-  //   level: 44,
-  //   maxHealth: 177,
-  //   name: "Mega Man",
-  //   // img: '/assets/megaman.png',
+  const opponentStats = {
+    level: 44,
+    name: "Samus",
+    maxHealth: 188,
+    img: 'assets/samus.png',
 
-  //   magic: 32,
-  //   attack: 50,
-  //   defense: 30,
-  //   magicDefense: 30,
-  // };
-
-  // const opponentStats = {
-  //   level: 44,
-  //   name: "Samus",
-  //   maxHealth: 188,
-  //   // img: '/assets/samus.png',
-
-  //   magic: 50,
-  //   attack: 32,
-  //   defense: 20,
-  //   magicDefense: 48,
-  // };
+    magic: 50,
+    attack: 32,
+    defense: 20,
+    magicDefense: 48,
+  };
 
   // Game configuration
   const [sequence, setSequence] = useState({});
@@ -66,6 +106,7 @@ const Battle = ({ onGameEnd }) => {
 
   const [playerHealth, setPlayerHealth] = useState(playerStats.maxHealth);
   const [opponentHealth, setOpponentHealth] = useState(opponentStats.maxHealth);
+  const [announcerMessage, setAnnouncerMessage] = useState('');
 
   const wait = (millisecondes) =>
     new Promise((resolve) => {
@@ -109,36 +150,11 @@ const Battle = ({ onGameEnd }) => {
 
           (async () => {
             setInSequence(true);
-            // setAnnouncerMessage(`${attacker.name} has chosen to attack!`);
-            // await wait(1000);
-
-            // turn === 0
-            //   ? setPlayerAnimation('attack')
-            //   : setOpponentAnimation('attack');
-            // await wait(100);
-
-            // turn === 0
-            //   ? setPlayerAnimation('static')
-            //   : setOpponentAnimation('static');
-            // await wait(500);
-
-            // turn === 0
-            //   ? setOpponentAnimation('damage')
-            //   : setPlayerAnimation('damage');
-            // await wait(750);
-
-            // turn === 0
-            //   ? setOpponentAnimation('static')
-            //   : setPlayerAnimation('static');
-            // setAnnouncerMessage(`${receiver.name} felt that!`);
 
             turn === 0
               ? setOpponentHealth((h) => (h - damage > 0 ? h - damage : 0))
               : setPlayerHealth((h) => (h - damage > 0 ? h - damage : 0)); // We don't want a negative HP.
             await wait(2000);
-
-            // setAnnouncerMessage(`Now it's ${receiver.name} turn!`);
-            // await wait(1500);
 
             setTurn(turn === 0 ? 1 : 0);
             setInSequence(false);
@@ -164,12 +180,79 @@ const Battle = ({ onGameEnd }) => {
       (async () => {
         await wait(1000);
         onGameEnd(playerHealth === 0 ? opponentStats : playerStats);
-        nextMatch(team.length > 0);
+        // nextMatch(team.length > 0);
       })();
     }
   }, [playerHealth, opponentHealth, onGameEnd]);
 
-  return <h1>Battle!</h1>;
+  return (
+    <>
+      <div className={styles.opponent}>
+        <div className={styles.summary}>
+          <PlayerSummary
+            main={false}
+            health={opponentHealth}
+            name={opponentStats.name}
+            level={opponentStats.level}
+            maxHealth={opponentStats.maxHealth}
+          />
+        </div>
+      </div>
+
+      <div className={styles.characters}>
+        <div className={styles.gameHeader}>
+          {playerStats.name} vs {opponentStats.name}
+        </div>
+        <div className={styles.gameImages}>
+          <div className={styles.playerSprite}>
+            <img
+              alt={playerStats.name}
+              src={playerStats.img}
+              // className={styles[playerAnimation]}
+            />
+          </div>
+          <div className={styles.opponentSprite}>
+            <img
+              alt={opponentStats.name}
+              src={opponentStats.img}
+              // className={styles[opponentAnimation]}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.user}>
+        <div className={styles.summary}>
+          <PlayerSummary
+            main={true}
+            health={playerHealth}
+            name={playerStats.name}
+            level={playerStats.level}
+            maxHealth={playerStats.maxHealth}
+          />
+        </div>
+
+        <div className={styles.hud}>
+          <div className={styles.hudChild}>
+            <BattleAnnouncer
+              message={
+                announcerMessage || `What will ${playerStats.name} do?`
+              }
+            />
+          </div>
+          {!inSequence && turn === 0 && (
+            <div className={styles.hudChild}>
+              <BattleMenu
+                onHeal={() => setSequence({ mode: 'heal', turn })}
+                onMagic={() => setSequence({ mode: 'magic', turn })}
+                onAttack={() => setSequence({ mode: 'attack', turn })}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Battle;
