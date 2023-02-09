@@ -405,17 +405,17 @@
   font-family: "Poke";
   font-size: 12px;
   text-transform: capitalize;
-  position: fixed;
-  top: 50.4%;
-  left: 55.5%;
+  position: absolute;
+  top: 170px;
+  left:350px;
   text-shadow: 2px 2px 1px #f8f8f8;
 }
 
 .infoframeright {
   width: 140px;
-  position: fixed;
-  top: 54.1%;
-  left: 52.5%;
+  position: absolute;
+  top: 192px;
+  left:315px;
 }
 
 .p2pokemoninfos {
@@ -423,9 +423,9 @@
   font-family: "Poke";
   font-size: 12px;
   text-transform: capitalize;
-  position: fixed;
-  top: 26.1%;
-  left: 20.7%;
+  position: absolute;
+  top: 5px;
+  left:35px;
   text-shadow: 2px 2px 1px #f8f8f8;
 }
 
@@ -436,9 +436,9 @@
 
 .infoframeleft {
   width: 140px;
-  position: fixed;
-  top: 29.5%;
-  left: 19.5%;
+  position: absolute;
+  top: 27px;
+  left:20px;
 }
 
 .arenafightmenu {
